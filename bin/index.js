@@ -140,8 +140,8 @@ if (isPostInstall) {
       await setupPreCommitHook(gitRoot);
       await setupPrePushHook(gitRoot);
 
-      await setupESLintConfig();
-      await setupSonarProperties();
+      await setupESLintConfig(projectRoot);
+      await setupSonarProperties(projectRoot);
       
       // Setup CI script
       await setupCIScript(projectRoot);
@@ -175,24 +175,24 @@ if (isPostInstall) {
     }
 
     const { installDevDependency } = require('../lib/packageManager');
-    await installHusky(gitRoot);
+    await installHusky(gitRoot, projectRoot);
     await installGitleaks();
-    await installSonarScanner();
-    await installDevDependency('eslint');
-    await installDevDependency('@eslint/js');
+    await installSonarScanner(projectRoot);
+    await installDevDependency('eslint', projectRoot);
+    await installDevDependency('@eslint/js', projectRoot);
 
     // Setup ESLint with TypeScript support
-    await setupESLintConfig();
+    await setupESLintConfig(projectRoot);
 
-    await setupSonarProperties();
-    await setupPreCommitHook(gitRoot);
+    await setupSonarProperties(projectRoot);
+    await setupPreCommitHook(gitRoot, projectRoot);
     logSuccess('Husky + Gitleaks + SonarQube pre-commit hook ready.');
     logInfo('Edit sonar-project.properties — set sonar.host.url and sonar.token.');
 
-    await ensurePackageLock();
-    await require('../lib/ci').ensureProjectScripts();
+    await ensurePackageLock(projectRoot);
+    await require('../lib/ci').ensureProjectScripts(projectRoot);
     await setupCIScript(projectRoot);
-    // await setupCIWorkflow(); // Disabled as per user preference for pre-push only
+    // await setupCIWorkflow(projectRoot); // Disabled as per user preference for pre-push only
     await setupPrePushHook(gitRoot);
     logSuccess('Pre-push hook ready.');
 
