@@ -26,7 +26,7 @@ if (!fs.existsSync(SENTINEL)) {
   if (result.status !== 0) {
     console.error('[cs-setup] Failed to install own dependencies. Please run:');
     console.error(`  cd ${PKG_DIR} && npm install`);
-    process.exit(0);
+    process.exit(1);
   }
   console.log('[cs-setup] Own dependencies installed.');
 }
@@ -98,7 +98,7 @@ if (isPostInstall) {
 
   if (!projectDir) {
     logError('Could not determine project directory. Run `npx cs-setup init` manually.');
-    process.exit(0);
+    process.exit(1);
   }
 
   // cd into the user's project
@@ -108,7 +108,7 @@ if (isPostInstall) {
       logInfo(`Target project: ${projectDir}`);
     } catch (e) {
       logError(`Failed to switch to project directory: ${e.message}`);
-      process.exit(0);
+      process.exit(1);
     }
   }
 }
@@ -139,13 +139,6 @@ if (isPostInstall) {
       await installHusky(gitRoot);
       await setupPreCommitHook(gitRoot);
       await setupPrePushHook(gitRoot);
-
-      // Ensure tools are installed
-      const { installSonarScanner } = require('../lib/sonarqube');
-      const { installDevDependency } = require('../lib/packageManager');
-      await installSonarScanner();
-      await installDevDependency('eslint');
-      await installDevDependency('@eslint/js');
 
       await setupESLintConfig();
       await setupSonarProperties();
@@ -200,6 +193,6 @@ if (isPostInstall) {
 
   } catch (err) {
     logError(`cs-setup failed: ${err.message}`);
-    process.exit(0);
+    process.exit(1);
   }
 })();
