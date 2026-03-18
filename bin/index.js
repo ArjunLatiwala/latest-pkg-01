@@ -125,11 +125,11 @@ if (isPostInstall) {
       process.exit(0);
     }
 
-    const { found, gitRoot, projectRoot } = await isGitRepo();
+    const { found, gitRoot, projectRoot, error } = await isGitRepo();
 
     if (command === 'check-hooks') {
-      if (!found) {
-        logInfo('Not a git repository — skipping check-hooks.');
+      if (!found && !projectRoot) {
+        logInfo(error || 'Not a git repository — skipping check-hooks.');
         process.exit(0);
       }
 
@@ -158,9 +158,14 @@ if (isPostInstall) {
     await fixInvalidAliases();
 
     if (!found) {
-      logError('Not inside a git repository — skipping setup.');
-      logInfo('Run `git init` first, then: npx cs-setup init');
-      process.exit(0);
+      logError(error || 'Not inside a git repository — skipping setup.');
+      if (projectRoot) {
+        logInfo(`Project detected at: ${projectRoot}`);
+        logInfo('Git structure incomplete. Run `git init` at the root, then: npx cs-setup init');
+      } else {
+        logInfo('Run `git init` and `npm init` first, then: npx cs-setup init');
+      }
+      process.exit(1);
     }
 
     if (gitRoot !== projectRoot) {
