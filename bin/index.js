@@ -10,7 +10,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 const fs = require('fs');
 const path = require('path');
-const { execSync, spawnSync } = require('child_process');
+const { execSync } = require('child_process');
 
 // const PKG_DIR = path.resolve(__dirname, '..');          // our package root
 // const OWN_NODE_MODULES = path.join(PKG_DIR, 'node_modules');
@@ -41,7 +41,6 @@ const { installGitleaks } = require('../lib/gitleaks');
 const { installSonarScanner, setupSonarProperties } = require('../lib/sonarqube');
 const { setupPreCommitHook } = require('../lib/hooks');
 const { setupPrePushHook, setupCIScript,
-  setupCIWorkflow, validateProject,
   ensurePackageLock } = require('../lib/ci');
 const { isGitRepo } = require('../lib/git');
 const { logInfo, logError, logSuccess } = require('../lib/logger');
@@ -144,7 +143,7 @@ if (isPostInstall) {
       await setupSonarProperties(projectRoot);
 
       // Setup CI script
-      await setupCIScript(projectRoot);
+      await setupCIScript(projectRoot, gitRoot);
 
       logSuccess('Git hooks and configuration verified/restored.');
       process.exit(0);
@@ -191,7 +190,7 @@ if (isPostInstall) {
 
     await ensurePackageLock(projectRoot);
     await require('../lib/ci').ensureProjectScripts(projectRoot);
-    await setupCIScript(projectRoot);
+    await setupCIScript(projectRoot, gitRoot);
     // await setupCIWorkflow(projectRoot); // Disabled as per user preference for pre-push only
     await setupPrePushHook(gitRoot);
     logSuccess('Pre-push hook ready.');
