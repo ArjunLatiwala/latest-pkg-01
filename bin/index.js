@@ -12,24 +12,24 @@ const fs = require('fs');
 const path = require('path');
 const { execSync, spawnSync } = require('child_process');
 
-const PKG_DIR = path.resolve(__dirname, '..');          // our package root
-const OWN_NODE_MODULES = path.join(PKG_DIR, 'node_modules');
-const SENTINEL = path.join(OWN_NODE_MODULES, 'fs-extra', 'package.json');
+// const PKG_DIR = path.resolve(__dirname, '..');          // our package root
+// const OWN_NODE_MODULES = path.join(PKG_DIR, 'node_modules');
+// const SENTINEL = path.join(OWN_NODE_MODULES, 'fs-extra', 'package.json');
 
-if (!fs.existsSync(SENTINEL)) {
-  console.log('[cs-setup] Installing own dependencies first...');
-  const result = spawnSync('npm', ['install', '--ignore-scripts'], {
-    cwd: PKG_DIR,
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  });
-  if (result.status !== 0) {
-    console.error('[cs-setup] Failed to install own dependencies. Please run:');
-    console.error(`  cd ${PKG_DIR} && npm install`);
-    process.exit(1);
-  }
-  console.log('[cs-setup] Own dependencies installed.');
-}
+// if (!fs.existsSync(SENTINEL)) {
+//   console.log('[cs-setup] Installing own dependencies first...');
+//   const result = spawnSync('npm', ['install', '--ignore-scripts'], {
+//     cwd: PKG_DIR,
+//     stdio: 'inherit',
+//     shell: process.platform === 'win32',
+//   });
+//   if (result.status !== 0) {
+//     console.error('[cs-setup] Failed to install own dependencies. Please run:');
+//     console.error(`  cd ${PKG_DIR} && npm install`);
+//     process.exit(1);
+//   }
+//   console.log('[cs-setup] Own dependencies installed.');
+// }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 1 — Now safe to require our dependencies
@@ -142,10 +142,10 @@ if (isPostInstall) {
 
       await setupESLintConfig(projectRoot);
       await setupSonarProperties(projectRoot);
-      
+
       // Setup CI script
       await setupCIScript(projectRoot);
-      
+
       logSuccess('Git hooks and configuration verified/restored.');
       process.exit(0);
     }

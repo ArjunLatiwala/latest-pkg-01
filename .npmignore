@@ -1,0 +1,16 @@
+# Dev/git internals — never needed by consumers
+.git/
+.github/
+.husky/
+.scannerwork/
+
+# Package-specific dev files
+.gitleaksignore
+sonar-project.properties
+eslint.config.mjs
+package-lock.json
+verify-ci.js
+Readme.md
+
+# Internal prepare script (only needed when developing cs-setup itself)
+scripts/prepare.js
